@@ -366,9 +366,10 @@ img { display: block; max-width: 100%; }
 .media-placeholder svg { width: 40px; height: 40px; stroke: currentColor; opacity: 0.7; }
 
 .project__card {
+  --footer-space: 20px; /* space above and below the Read more row */
   background: var(--surface);
   box-shadow: var(--shadow);
-  padding: 40px;
+  padding: 40px 40px var(--footer-space);
 }
 
 .project__meta {
@@ -447,7 +448,8 @@ img { display: block; max-width: 100%; }
   justify-content: space-between;
   width: 100%;
   margin-top: 24px;
-  padding: 14px 0 0;
+  /* footer rhythm: same space above (here) and below (card bottom padding) */
+  padding: var(--footer-space) 0 0;
   border: 0;
   border-top: 1px solid var(--heading-mark);
   border-radius: 0;
@@ -701,7 +703,7 @@ img { display: block; max-width: 100%; }
   .page { padding-top: 24px; }
   .intro { padding: 28px 24px; gap: 24px; }
   .intro__edu { padding-top: 24px; gap: 16px; }
-  .project__card { padding: 28px 22px; }
+  .project__card { --footer-space: 16px; padding: 28px 22px var(--footer-space); }
   .outcome { padding: 18px 18px 20px; border-radius: 20px; }
   .project__desc { font-size: 17px; }
   .section-head { margin: 64px 0 28px; }

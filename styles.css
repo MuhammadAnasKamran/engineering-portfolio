@@ -490,7 +490,7 @@ img { display: block; max-width: 100%; }
   text-transform: none;
   color: var(--text);
 }
-.block__label { margin: 0 0 6px; }
+.block__label { margin: 0 0 6px; font-size: 18px; line-height: 1.4; } /* one step above the 16px decision titles */
 /* Section headings (not Outcome, not the decision titles) are marked with the
    selection shade. An inline background covers the glyph height, exactly like
    the selection bands; the 5px side padding is offset by a negative margin so

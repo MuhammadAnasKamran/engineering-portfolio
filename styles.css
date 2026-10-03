@@ -508,7 +508,8 @@ img { display: block; max-width: 100%; }
   transform: translate(-50%, -50%);
   transition: transform 300ms var(--ease-premium), background-color 200ms ease;
 }
-.video-poster__play svg { width: 28px; height: 28px; margin-left: 4px; fill: var(--text); }
+/* Triangle is drawn ~1px right of the box centre inside the icon: optical centring */
+.video-poster__play svg { width: 28px; height: 28px; fill: var(--text); }
 .video-poster:hover .video-poster__play { transform: translate(-50%, -50%) scale(1.08); background: #FFFFFF; }
 .video-poster:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
 .video-poster__label {

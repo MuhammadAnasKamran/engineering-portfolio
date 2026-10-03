@@ -38,7 +38,7 @@
       const inner = m.type === "video"
         ? `<button class="video-poster" type="button" data-video="${esc(m.src)}" data-aspect="${esc(m.videoAspect || "16 / 9")}" data-title="${esc(m.alt)}" aria-label="Play video: ${esc(m.alt)}">
              <img src="${esc(m.poster)}" alt="" loading="lazy" decoding="async">
-             <span class="video-poster__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+             <span class="video-poster__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.5 5.5v13l11-6.5z"/></svg></span>
              <span class="video-poster__label">Watch demo</span>
            </button>`
         : `<img src="${esc(m.src)}" alt="${esc(m.alt)}" loading="lazy" decoding="async"${style ? ` style="${esc(style)}"` : ""}>`;

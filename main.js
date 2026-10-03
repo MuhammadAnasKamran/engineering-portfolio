@@ -98,7 +98,7 @@
   //   OUTCOME       -> paragraph in the green box
   const section = (label, content, extraClass = "") => `
     <section class="block${extraClass ? ` ${extraClass}` : ""}">
-      <h4 class="block__label">${esc(label)}</h4>
+      <h4 class="block__label"><span class="block__label-text">${esc(label)}</span></h4>
       ${content}
     </section>`;
 

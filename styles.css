@@ -491,6 +491,19 @@ img { display: block; max-width: 100%; }
   color: var(--text);
 }
 .block__label { margin: 0 0 6px; }
+/* Section headings (not Outcome, not the decision titles) are marked with the
+   selection shade. An inline background covers the glyph height, exactly like
+   the selection bands; the 5px side padding is offset by a negative margin so
+   the words stay aligned with the text below. */
+.block:not(.outcome) > .block__label .block__label-text {
+  margin-left: -5px;
+  padding: 0 5px;
+  border-radius: 2px;
+  background: var(--selection-bg);
+  color: #FFFFFF;
+  -webkit-box-decoration-break: clone;
+          box-decoration-break: clone;
+}
 /* Decisions: grouped under one KEY INSIGHT(S) label by a thin left rule.
    Titles are bold at body size, so they read as lead-ins, not headings. */
 .insights {

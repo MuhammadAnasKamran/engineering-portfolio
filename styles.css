@@ -497,7 +497,9 @@ img { display: block; max-width: 100%; }
    the words stay aligned with the text below. */
 .block:not(.outcome) > .block__label .block__label-text {
   margin-left: -5px;
-  padding: 0 5px;
+  /* extra room below so the letters sit centred in the band (inline padding
+     doesn't affect layout, so nothing around it moves) */
+  padding: 0 5px 0.12em;
   border-radius: 2px;
   background: var(--selection-bg);
   color: #FFFFFF;

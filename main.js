@@ -155,7 +155,9 @@
 
           <button class="read-more" type="button" aria-expanded="false" aria-controls="${esc(p.id)}-details">
             <span class="read-more__label">Read more</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            <span class="read-more__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
           </button>
         </div>
       </article>`)

@@ -439,28 +439,43 @@ img { display: block; max-width: 100%; }
   transition-delay: 120ms, 0ms;
 }
 
+/* Disclosure row: full width, thin divider, label left, ink chevron right.
+   Reads as "this card expands" and gives a large, easy click target. */
 .read-more {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 28px;
-  padding: 9px 16px 9px 18px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: var(--surface-muted);
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px 0 0;
+  border: 0;
+  border-top: 1px solid var(--heading-mark);
+  border-radius: 0;
+  background: none;
   color: var(--text);
   font: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  transition: background-color 200ms ease, transform 200ms var(--ease-premium);
+  text-align: left;
 }
-.read-more:hover { background: #EDEBE6; }
-.read-more:active { transform: scale(0.97); }
-.read-more:focus-visible,
+.read-more__icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  background: var(--outcome-bg);
+  color: #FFFFFF;
+  transition: transform 300ms var(--ease-premium), background-color 200ms ease;
+}
+.read-more:hover .read-more__icon { transform: scale(1.08); background: #000000; }
+.read-more:active .read-more__icon { transform: scale(0.94); }
+.read-more:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; border-radius: 6px; }
 .button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .read-more svg {
-  width: 18px; height: 18px;
-  fill: none; stroke: currentColor; stroke-width: 2;
+  width: 16px; height: 16px;
+  fill: none; stroke: currentColor; stroke-width: 2.2;
   stroke-linecap: round; stroke-linejoin: round;
   transition: transform 500ms var(--ease-premium);
 }

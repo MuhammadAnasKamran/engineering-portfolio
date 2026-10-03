@@ -218,10 +218,19 @@
       });
     },
     // Threshold 0 + a bottom inset: projects can be taller than the screen on
-    // phones, so trigger on the top edge crossing ~85% of the viewport height.
-    { threshold: 0, rootMargin: "0px 0px -15% 0px" }
+    // phones, so trigger on the top edge crossing ~92% of the viewport height
+    // (low enough that the "Projects" heading shows on first load).
+    { threshold: 0, rootMargin: "0px 0px -8% 0px" }
   );
-  targets.forEach((el) => observer.observe(el));
+  targets.forEach((el) => {
+    // Anything already on screen at load (e.g. the "Projects" heading) reveals
+    // straight away, so the first view never looks like the page ends early.
+    if (el.getBoundingClientRect().top < window.innerHeight) {
+      requestAnimationFrame(() => el.classList.add("is-visible"));
+    } else {
+      observer.observe(el);
+    }
+  });
 
   // A fast scroll (or jumping to an anchor) can skip right past an element
   // without it ever intersecting; reveal anything already above the viewport.

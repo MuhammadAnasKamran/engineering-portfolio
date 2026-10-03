@@ -242,6 +242,27 @@
     dialog.showModal();
   });
 
+  /* ---------- Photo height follows the collapsed card ---------- */
+  // Card height minus the expandable details = the collapsed height, and that
+  // holds before, during and after the "Read more" animation. The photo column
+  // is locked to it (see styles.css), so expanding never uncrops the photo.
+  const lockMediaHeight = (card) => {
+    const details = card.querySelector(".details");
+    const media = card.parentElement.querySelector(".project__media");
+    const collapsed = card.offsetHeight - (details ? details.offsetHeight : 0);
+    media.style.setProperty("--card-h", `${collapsed}px`);
+  };
+  const cards = document.querySelectorAll(".project__card");
+  const lockAll = () => cards.forEach(lockMediaHeight);
+  lockAll(); // now, so it never depends on a resize event firing first
+  window.addEventListener("resize", lockAll);
+  window.addEventListener("load", lockAll);                  // after images/fonts settle
+  if (document.fonts) document.fonts.ready.then(lockAll);
+  if ("ResizeObserver" in window) {                          // text reflow, wrapping, etc.
+    const cardRO = new ResizeObserver((entries) => entries.forEach((e) => lockMediaHeight(e.target)));
+    cards.forEach((card) => cardRO.observe(card));
+  }
+
   /* ---------- Read more ---------- */
   document.getElementById("project-list").addEventListener("click", (e) => {
     const button = e.target.closest(".read-more");

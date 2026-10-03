@@ -1,5 +1,6 @@
 /* ---------- Design tokens ---------- */
 :root {
+  --card-pad-x: 40px;
   --bg: #F3F2EF;
   --surface: #FFFFFF;
   --surface-muted: #F7F6F3;
@@ -145,7 +146,7 @@ img { display: block; max-width: 100%; }
   /* Rounded square whose height matches the text block beside it */
   position: relative;
   flex: none;
-  align-self: center;
+  align-self: flex-start; /* when capped beside long wrapped text, sit at the top */
   aspect-ratio: 1 / 1; /* width/height are set from the text height in main.js */
   display: grid;
   place-items: center;
@@ -174,8 +175,11 @@ img { display: block; max-width: 100%; }
 /* Wordmarks (ASTRI, CLP, EEE) are wide: less padding so they read larger */
 .logo--wordmark img { padding: 9%; }
 
-.logo--lg { width: 64px; font-size: 15px; }
-.logo--sm { width: 56px; }
+/* Tiles follow the text height (main.js) but never grow past a cap, so on
+   narrow screens, where the text wraps onto many lines, the text keeps the
+   width instead of the logo. Capping both sides keeps the tile square. */
+.logo--lg { width: 64px; font-size: 15px; max-width: 72px; max-height: 72px; }
+.logo--sm { width: 56px; max-width: 64px; max-height: 64px; }
 
 /* ---------- Intro ---------- */
 .intro {
@@ -367,9 +371,10 @@ img { display: block; max-width: 100%; }
 
 .project__card {
   --footer-space: 20px; /* space above and below the Read more row */
+  --card-pad-x: 40px;
   background: var(--surface);
   box-shadow: var(--shadow);
-  padding: 40px 40px var(--footer-space);
+  padding: 40px var(--card-pad-x) var(--footer-space);
 }
 
 .project__meta {
@@ -696,6 +701,30 @@ img { display: block; max-width: 100%; }
     margin-bottom: 72px;
   }
   .project:nth-child(even) .project__media { order: 0; }
+
+  /* Stacked layout: photo and text become ONE card per project, so it's always
+     clear which photo belongs to which description while scrolling. */
+  .project,
+  .project:nth-child(even) {
+    gap: 0;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    isolation: isolate; /* keeps the rounded clip crisp (Safari) */
+  }
+  @supports (corner-shape: squircle) { .project { corner-shape: squircle; } }
+  .project .media-frame.squircle { border-radius: 0; corner-shape: round; }
+  /* tall portrait photos are capped (cropped around their focal point) so the
+     title stays close and photo + text read as one unit */
+  .project .media-frame { max-height: 400px; }
+  .project__media .thumbs { margin: 0; padding: 12px var(--card-pad-x) 0; }
+  .project__card,
+  .project__card.squircle {
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
 }
 
 @media (max-width: 600px) {
@@ -703,7 +732,10 @@ img { display: block; max-width: 100%; }
   .page { padding-top: 24px; }
   .intro { padding: 28px 24px; gap: 24px; }
   .intro__edu { padding-top: 24px; gap: 16px; }
-  .project__card { --footer-space: 16px; padding: 28px 22px var(--footer-space); }
+  .project { --card-pad-x: 22px; }
+  .project__card { --footer-space: 16px; --card-pad-x: 22px; padding: 24px var(--card-pad-x) var(--footer-space); }
+  .logo--lg { max-width: 56px; max-height: 56px; }
+  .logo--sm { max-width: 52px; max-height: 52px; }
   .outcome { padding: 18px 18px 20px; border-radius: 20px; }
   .project__desc { font-size: 17px; }
   .section-head { margin: 64px 0 28px; }

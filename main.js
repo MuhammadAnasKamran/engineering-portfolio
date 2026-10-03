@@ -72,7 +72,7 @@
       ${logoHTML(profile.logo, "lg")}
       <div>
         <p class="intro__edu-name">${esc(profile.university)}</p>
-        <p class="intro__edu-dept">${esc(profile.department)}</p>
+        <p class="intro__edu-dept">${esc(profile.degree)}</p>
         <p class="intro__edu-loc">${esc(profile.location)}</p>
       </div>
     </div>

@@ -3,7 +3,7 @@ window.CONTENT = {
   "profile": {
     "name": "Muhammad Anas Kamran",
     "university": "The Hong Kong Polytechnic University",
-    "department": "Department of Electrical & Electronic Engineering",
+    "degree": "BEng (Hons) Electrical Engineering",
     "headline": "Electrical & Electronic Engineering student building hardware that is safe, measurable and easy to use.",
     "linkedin": "https://www.linkedin.com/in/muhammad-anas-kamran",
     "email": "muhammad-anas.kamran@connect.polyu.hk",

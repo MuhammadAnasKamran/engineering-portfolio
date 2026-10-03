@@ -262,23 +262,6 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 18px 40px rgba(25, 25, 25, 0.16), 0 4px 12px rgba(25, 25, 25, 0.08);
 }
 
-/* Light glare that follows the cursor across the photo */
-.media-glare {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle at var(--glare-x, 50%) var(--glare-y, 50%),
-    rgba(255, 255, 255, 0.30) 0%,
-    rgba(255, 255, 255, 0.08) 30%,
-    rgba(255, 255, 255, 0) 62%
-  );
-  opacity: 0;
-  transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.media-frame.is-tilting .media-glare { opacity: 1; }
 
 .slide {
   position: absolute;

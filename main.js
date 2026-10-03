@@ -57,7 +57,6 @@
     return `
       <div class="media-frame squircle" style="aspect-ratio:${esc(media.aspect || "4 / 3")}">
         ${slides || imagePlaceholder}
-        <span class="media-glare" aria-hidden="true"></span>
       </div>
       ${thumbs}`;
   };
@@ -160,8 +159,6 @@
         const rotateX = (0.5 - pointer.y) * 2 * MAX_TILT;  // up/down
         frame.style.transform =
           `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(1.02)`;
-        frame.style.setProperty("--glare-x", `${(pointer.x * 100).toFixed(1)}%`);
-        frame.style.setProperty("--glare-y", `${(pointer.y * 100).toFixed(1)}%`);
       };
 
       frame.addEventListener("pointerenter", () => frame.classList.add("is-tilting"));

@@ -73,7 +73,7 @@ window.CONTENT = {
         "aspect": "3 / 4",
         "items": [
           {
-            "src": "assets/projects/gpu-immersion-cooling.jpg",
+            "src": "assets/projects/gpu-immersion-cooling.jpg?v=2",
             "alt": "The assembled 4-layer ESP32-S3 control board with screw terminals for the pump, fans, LEDs and sensors",
             "position": "45% 48%"
           }
@@ -146,12 +146,12 @@ window.CONTENT = {
         "aspect": "4 / 3",
         "items": [
           {
-            "src": "assets/projects/clp-inspection-robot-1.jpg",
+            "src": "assets/projects/clp-inspection-robot-1.jpg?v=2",
             "alt": "Top view of the six-section ring robot assembled on the lab floor",
             "position": "50% 50%"
           },
           {
-            "src": "assets/projects/clp-inspection-robot-2.jpg",
+            "src": "assets/projects/clp-inspection-robot-2.jpg?v=2",
             "alt": "Side view of the ring robot showing the carbon-fibre panels, wiring and sensor modules",
             "position": "52% 62%"
           }
@@ -184,12 +184,12 @@ window.CONTENT = {
         "aspect": "4 / 3",
         "items": [
           {
-            "src": "assets/projects/underwater-rov-1.jpg",
+            "src": "assets/projects/underwater-rov-1.jpg?v=2",
             "alt": "The ROV from above, with three thrusters, red gripper arms and foam buoyancy blocks",
             "position": "0% 50%"
           },
           {
-            "src": "assets/projects/underwater-rov-2.jpg",
+            "src": "assets/projects/underwater-rov-2.jpg?v=2",
             "alt": "Joystick controller with an Arduino and the 12 V to 5 V buck converter",
             "position": "55% 55%"
           }
@@ -227,12 +227,12 @@ window.CONTENT = {
         "aspect": "3 / 4",
         "items": [
           {
-            "src": "assets/projects/generator-power-monitor-1.jpg",
+            "src": "assets/projects/generator-power-monitor-1.jpg?v=2",
             "alt": "Breadboard power monitor with an Arduino Nano and INA219, showing voltage, current and power on an LCD",
             "position": "50% 64%"
           },
           {
-            "src": "assets/projects/generator-power-monitor-2.jpg",
+            "src": "assets/projects/generator-power-monitor-2.jpg?v=2",
             "alt": "The team-built axial-flux generator with its copper stator coils",
             "position": "45% 55%"
           }
@@ -264,7 +264,7 @@ window.CONTENT = {
         "aspect": "4 / 3",
         "items": [
           {
-            "src": "assets/projects/robotic-arm-cad.jpg",
+            "src": "assets/projects/robotic-arm-cad.jpg?v=2",
             "alt": "SOLIDWORKS render of the six-joint robotic arm on its base with the control board",
             "fit": "contain",
             "background": "#FFFFFF"

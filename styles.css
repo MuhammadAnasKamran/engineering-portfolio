@@ -22,6 +22,7 @@
   --grid-dot: rgba(25, 25, 25, 0.16);
   --grid-line: rgba(25, 25, 25, 0.04);
   --selection-bg: #2B2B2B;
+  --heading-mark: #ECE9E2;  /* soft warm grey behind section headings */
 
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
@@ -491,8 +492,8 @@ img { display: block; max-width: 100%; }
   color: var(--text);
 }
 .block__label { margin: 0 0 6px; font-size: 18px; line-height: 1.4; } /* one step above the 16px decision titles */
-/* Section headings (not Outcome, not the decision titles) are marked with the
-   selection shade. An inline background covers the glyph height, exactly like
+/* Section headings (not Outcome, not the decision titles) are marked with a
+   soft warm grey from the page's cream family. An inline background covers the glyph height, exactly like
    the selection bands; the 5px side padding is offset by a negative margin so
    the words stay aligned with the text below. */
 .block:not(.outcome) > .block__label .block__label-text {
@@ -501,8 +502,8 @@ img { display: block; max-width: 100%; }
      doesn't affect layout, so nothing around it moves) */
   padding: 0 5px 0.12em;
   border-radius: 2px;
-  background: var(--selection-bg);
-  color: #FFFFFF;
+  background: var(--heading-mark);
+  color: var(--text);
   -webkit-box-decoration-break: clone;
           box-decoration-break: clone;
 }

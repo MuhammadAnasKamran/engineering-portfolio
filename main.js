@@ -4,6 +4,10 @@
   const { profile, logos, projects } = window.CONTENT;
   document.documentElement.classList.add("js");
 
+  // Start at the top on refresh instead of restoring the old scroll position
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  window.scrollTo(0, 0);
+
   const esc = (s) =>
     String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -275,6 +279,13 @@
     dialogFrame.innerHTML = /\.(mp4|webm)(\?|$)/.test(src)
       ? `<video src="${esc(src)}" title="${esc(poster.dataset.title)}" controls autoplay muted playsinline preload="auto"></video>`
       : `<iframe src="${esc(src)}" title="${esc(poster.dataset.title)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+    // The demo is long and silent, so play it at 2x by default (still changeable
+    // from the player's own speed menu).
+    const video = dialogFrame.querySelector("video");
+    if (video) {
+      video.defaultPlaybackRate = 2;
+      video.playbackRate = 2;
+    }
     dialog.showModal();
   });
 
@@ -397,14 +408,46 @@
 
     button.setAttribute("aria-expanded", String(open));
     button.querySelector(".read-more__label").textContent = open ? "Show less" : "Read more";
-    card.classList.toggle("is-open", open);
     inner.inert = !open;
 
-    // Collapsing a long card can leave the reader below it; bring its top back into view.
-    if (!open && card.getBoundingClientRect().top < 0) {
-      card.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (open) {
+      card.classList.add("is-open");
+      return;
     }
+
+    // Collapsing: if the project's top is above the screen, scroll back up to it
+    // FIRST and only then collapse. Doing both at once made the two motions fight
+    // (and the page could clamp near the bottom), which showed up as a jitter.
+    const project = card.closest(".project");
+    const top = project.getBoundingClientRect().top;
+    if (top >= 0) {
+      card.classList.remove("is-open");
+      return;
+    }
+    const target = Math.max(0, window.scrollY + top - 16);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: target, behavior: reduce ? "auto" : "smooth" });
+    waitForScrollEnd(target).then(() => card.classList.remove("is-open"));
   });
+
+  // Resolves once scrolling has settled at the target (or after a safety timeout).
+  // Uses polling because the "scrollend" event isn't available in every browser.
+  function waitForScrollEnd(target) {
+    return new Promise((resolve) => {
+      const started = performance.now();
+      let lastY = window.scrollY, still = 0;
+      const tick = () => {
+        const y = window.scrollY;
+        still = Math.abs(y - lastY) < 0.5 ? still + 1 : 0;
+        lastY = y;
+        const arrived = Math.abs(y - target) < 2 && still >= 2;
+        if (arrived || still >= 6 || performance.now() - started > 1200) resolve();
+        else requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      setTimeout(resolve, 1300); // hard fallback if frames are throttled (e.g. background tab)
+    });
+  }
 
   document.getElementById("footer-text").textContent =
     `© ${new Date().getFullYear()} ${profile.name}`;

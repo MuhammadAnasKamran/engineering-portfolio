@@ -41,7 +41,13 @@
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* No scroll anchoring: when a "Read more" section collapses, the browser
+     would otherwise nudge the scroll position to keep visible text in place,
+     which fought our own smooth scroll and caused a jitter. */
+  overflow-anchor: none;
+}
 
 body {
   margin: 0;
@@ -703,6 +709,16 @@ img { display: block; max-width: 100%; }
     margin-bottom: 72px;
   }
   .project:nth-child(even) .project__media { order: 0; }
+
+  /* Stacked layout: photo and text are one card, so they must appear together.
+     Turn off the desktop stagger (photo first, text 140ms later), which left
+     the empty white card visible for a moment while scrolling. */
+  .js .project.reveal .project__media,
+  .js .project.reveal .project__card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 
   /* Stacked layout: photo and text become ONE card per project, so it's always
      clear which photo belongs to which description while scrolling. */

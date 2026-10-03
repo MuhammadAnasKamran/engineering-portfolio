@@ -101,16 +101,23 @@ body::before {
   color: #FFFFFF;
 }
 
-/* Where supported, main.js paints the selection with the Custom Highlight API
-   instead: it shades only the glyphs' height, so every line gets the same,
-   tighter band (native selection also fills the line gaps, unevenly in Safari). */
+/* With JS, main.js paints even, glyph-height selection bands itself (the native
+   band is sized by line box and comes out uneven, especially in Safari). The
+   native selection keeps only its white text colour. */
 .custom-selection ::selection {
   background: transparent;
   color: #FFFFFF;
 }
-::highlight(text-selection) {
-  background-color: var(--selection-bg);
-  color: #FFFFFF;
+.sel-layer {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.sel-band {
+  position: absolute;
+  background: var(--selection-bg);
+  border-radius: 2px;
 }
 
 h1, h2, h3, h4 { margin: 0; color: var(--text); letter-spacing: -0.02em; }

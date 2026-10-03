@@ -264,19 +264,92 @@
   }
 
   /* ---------- Even text-selection highlight ---------- */
-  if (window.CSS && CSS.highlights && window.Highlight) {
-    document.documentElement.classList.add("custom-selection");
-    document.addEventListener("selectionchange", () => {
-      const sel = document.getSelection();
-      if (!sel || sel.isCollapsed || !sel.rangeCount) {
-        CSS.highlights.delete("text-selection");
-        return;
-      }
-      const ranges = [];
-      for (let i = 0; i < sel.rangeCount; i++) ranges.push(sel.getRangeAt(i).cloneRange());
-      CSS.highlights.set("text-selection", new Highlight(...ranges));
+  // Browsers size the native selection band by line box, and Safari stretches
+  // some lines into the gaps, so bands come out uneven. Instead the native band
+  // is made transparent (styles.css) and we paint our own: one band per line,
+  // sized to the glyph box the browser reports for the selected text (identical
+  // for every line of the same font size). Each band sits just behind the text,
+  // inside the nearest element with its own background (page, card, skill pill,
+  // outcome box...), so the white selected text stays on top.
+  document.documentElement.classList.add("custom-selection");
+  const selLayers = new Map(); // surface element -> its band layer
+
+  const isTransparent = (cs) =>
+    cs.backgroundImage === "none" &&
+    (cs.backgroundColor === "transparent" || /rgba\(.*,\s*0\)$/.test(cs.backgroundColor));
+
+  const surfaceFor = (el) => {
+    for (let n = el; n && n !== document.body; n = n.parentElement) {
+      if (!isTransparent(getComputedStyle(n))) return n;
+    }
+    return document.body;
+  };
+
+  const layerFor = (surface) => {
+    let layer = selLayers.get(surface);
+    if (layer && layer.isConnected) return layer;
+    if (surface !== document.body) {
+      // Make the surface a stacking context so a z-index:-1 layer paints above
+      // its background but below its text. Don't disturb positioned elements.
+      if (getComputedStyle(surface).position === "static") surface.style.position = "relative";
+      surface.style.isolation = "isolate";
+    }
+    layer = document.createElement("div");
+    layer.className = "sel-layer";
+    layer.setAttribute("aria-hidden", "true");
+    surface.appendChild(layer);
+    selLayers.set(surface, layer);
+    return layer;
+  };
+
+  const textNodesIn = (range) => {
+    const root = range.commonAncestorContainer;
+    if (root.nodeType === Node.TEXT_NODE) return [root];
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) =>
+        // skip whitespace, our own bands, and text hidden in collapsed "Read more"
+        range.intersectsNode(n) && n.textContent.trim() &&
+        !n.parentElement.closest(".sel-layer, [inert], [aria-hidden='true']")
+          ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT,
     });
-  }
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    return nodes;
+  };
+
+  let selFrame = 0;
+  const paintSelection = () => {
+    selFrame = 0;
+    selLayers.forEach((layer) => layer.replaceChildren());
+    const sel = document.getSelection();
+    if (!sel || sel.isCollapsed || !sel.rangeCount) return;
+
+    for (let r = 0; r < sel.rangeCount; r++) {
+      const range = sel.getRangeAt(r);
+      textNodesIn(range).forEach((node) => {
+        const part = document.createRange();
+        part.selectNodeContents(node);
+        if (node === range.startContainer) part.setStart(node, range.startOffset);
+        if (node === range.endContainer) part.setEnd(node, range.endOffset);
+
+        const surface = surfaceFor(node.parentElement);
+        const layer = layerFor(surface);
+        const box = layer.getBoundingClientRect();
+        [...part.getClientRects()].forEach((rect) => {
+          if (rect.width < 0.5 || rect.height < 0.5) return;
+          const band = document.createElement("span");
+          band.className = "sel-band";
+          band.style.cssText =
+            `left:${rect.left - box.left}px;top:${rect.top - box.top}px;` +
+            `width:${rect.width}px;height:${rect.height}px`;
+          layer.appendChild(band);
+        });
+      });
+    }
+  };
+  const scheduleSelection = () => { if (!selFrame) selFrame = requestAnimationFrame(paintSelection); };
+  document.addEventListener("selectionchange", scheduleSelection);
+  window.addEventListener("resize", scheduleSelection);
 
   /* ---------- Read more ---------- */
   document.getElementById("project-list").addEventListener("click", (e) => {

@@ -424,13 +424,9 @@ img { display: block; max-width: 100%; }
   grid-template-rows: 0fr;
   transition: grid-template-rows 700ms var(--ease-premium);
 }
-.project__card { --outcome-pad: 20px; } /* outcome box bleed, see .outcome */
 .details__inner {
   min-height: 0;
   overflow: hidden;
-  /* widen the clip area so the outcome box's outward bleed isn't cut off */
-  margin-inline: calc(var(--outcome-pad) * -1);
-  padding-inline: var(--outcome-pad);
   opacity: 0;
   transform: translate3d(0, -8px, 0);
   transition:
@@ -524,12 +520,12 @@ img { display: block; max-width: 100%; }
 
 /* Level 3: Outcome, the "dark finale" card that closes every project. Same
    typography as the sections above, inverted: white heading, soft cream text.
-   It bleeds outwards by its own padding so its text lines up with the rest. */
+   Its outer edges line up with the text column and the divider above, so it
+   sits on the same grid as everything else in the card. */
 .outcome {
-  margin-inline: calc(var(--outcome-pad) * -1);
-  padding: var(--outcome-pad);
+  padding: 20px 22px 22px;
   background: var(--outcome-bg);
-  border-radius: calc(var(--radius) * 0.5);
+  border-radius: 24px;
 }
 .outcome .block__label { color: #FFFFFF; }
 .outcome .block__body { color: var(--outcome-text); }
@@ -692,7 +688,7 @@ img { display: block; max-width: 100%; }
   .intro { padding: 28px 24px; gap: 24px; }
   .intro__edu { padding-top: 24px; gap: 16px; }
   .project__card { padding: 28px 22px; }
+  .outcome { padding: 18px 18px 20px; border-radius: 20px; }
   .project__desc { font-size: 17px; }
-  .project__card { --outcome-pad: 14px; }
   .section-head { margin: 64px 0 28px; }
 }

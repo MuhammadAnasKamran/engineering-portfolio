@@ -622,7 +622,9 @@ img { display: block; max-width: 100%; }
   border-radius: 14px;
   background: #000000;
 }
-.video-dialog__frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+.video-dialog__frame iframe,
+.video-dialog__frame video { display: block; width: 100%; height: 100%; border: 0; }
+.video-dialog__frame video { object-fit: contain; background: #000000; } /* never crop */
 .video-dialog__close {
   position: absolute;
   top: -52px;

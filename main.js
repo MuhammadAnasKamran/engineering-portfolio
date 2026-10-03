@@ -249,8 +249,16 @@
   document.body.appendChild(dialog);
   const dialogFrame = dialog.querySelector(".video-dialog__frame");
 
-  const closeVideo = () => dialog.close();
-  dialog.addEventListener("close", () => { dialogFrame.innerHTML = ""; }); // stops playback
+  // Stop and remove the player immediately (not only when the async "close"
+  // event arrives), so nothing keeps playing in the background.
+  const stopVideo = () => {
+    const v = dialogFrame.querySelector("video");
+    if (v) v.pause();
+    dialogFrame.innerHTML = "";
+  };
+  const closeVideo = () => { stopVideo(); dialog.close(); };
+  dialog.addEventListener("cancel", stopVideo); // Esc key
+  dialog.addEventListener("close", stopVideo);
   dialog.querySelector(".video-dialog__close").addEventListener("click", closeVideo);
   dialog.addEventListener("click", (e) => { if (e.target === dialog) closeVideo(); }); // backdrop click
 
@@ -261,7 +269,12 @@
     dialogFrame.style.aspectRatio = `${w} / ${h}`;
     // Fit both width and height of the window so the whole video is always visible.
     dialog.style.width = `min(1100px, calc(100vw - 32px), calc((100vh - 120px) * ${w / h}))`;
-    dialogFrame.innerHTML = `<iframe src="${esc(poster.dataset.video)}" title="${esc(poster.dataset.title)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+    const src = poster.dataset.video;
+    // Self-hosted files play in the browser's own player: it always fits the
+    // whole frame (no cropping on phones) and supports native full screen.
+    dialogFrame.innerHTML = /\.(mp4|webm)(\?|$)/.test(src)
+      ? `<video src="${esc(src)}" title="${esc(poster.dataset.title)}" controls autoplay muted playsinline preload="auto"></video>`
+      : `<iframe src="${esc(src)}" title="${esc(poster.dataset.title)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
     dialog.showModal();
   });
 

@@ -101,6 +101,18 @@ body::before {
   color: #FFFFFF;
 }
 
+/* Where supported, main.js paints the selection with the Custom Highlight API
+   instead: it shades only the glyphs' height, so every line gets the same,
+   tighter band (native selection also fills the line gaps, unevenly in Safari). */
+.custom-selection ::selection {
+  background: transparent;
+  color: #FFFFFF;
+}
+::highlight(text-selection) {
+  background-color: var(--selection-bg);
+  color: #FFFFFF;
+}
+
 h1, h2, h3, h4 { margin: 0; color: var(--text); letter-spacing: -0.02em; }
 p { margin: 0; }
 a { color: var(--accent); }
@@ -272,7 +284,6 @@ img { display: block; max-width: 100%; }
   background:
     radial-gradient(120% 90% at 20% 15%, #FFFFFF 0%, rgba(255,255,255,0) 60%),
     linear-gradient(135deg, #E9E6DF 0%, #DCD8CF 100%);
-  border: 1px solid var(--border);
   display: grid;
   place-items: center;
   /* Tilt: flat by default, springs back gently when the cursor leaves */

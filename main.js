@@ -263,6 +263,21 @@
     cards.forEach((card) => cardRO.observe(card));
   }
 
+  /* ---------- Even text-selection highlight ---------- */
+  if (window.CSS && CSS.highlights && window.Highlight) {
+    document.documentElement.classList.add("custom-selection");
+    document.addEventListener("selectionchange", () => {
+      const sel = document.getSelection();
+      if (!sel || sel.isCollapsed || !sel.rangeCount) {
+        CSS.highlights.delete("text-selection");
+        return;
+      }
+      const ranges = [];
+      for (let i = 0; i < sel.rangeCount; i++) ranges.push(sel.getRangeAt(i).cloneRange());
+      CSS.highlights.set("text-selection", new Highlight(...ranges));
+    });
+  }
+
   /* ---------- Read more ---------- */
   document.getElementById("project-list").addEventListener("click", (e) => {
     const button = e.target.closest(".read-more");

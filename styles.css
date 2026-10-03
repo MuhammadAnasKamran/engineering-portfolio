@@ -9,9 +9,8 @@
   --border: rgba(25, 25, 25, 0.08);
   --accent: #0A66C2;
   --accent-soft: #EAF2FB;
-  --outcome-bg: #EEF6EE;
-  --outcome-border: #CFE5CF;
-  --outcome-label: #2E6B34;
+  --outcome-bg: #1F1F1F;     /* dark finale card */
+  --outcome-text: #D9D6CF;   /* soft cream body text on the dark card */
 
   /* One corner radius for every card, image and logo */
   --radius: 24px;
@@ -523,17 +522,19 @@ img { display: block; max-width: 100%; }
   color: #333333;
 }
 
-/* Level 3: Outcome. Same typography as every other section; it stands out
-   only through its tinted box and green label. The box bleeds outwards by its
-   own padding so the label and text line up with the text above. */
+/* Level 3: Outcome, the "dark finale" card that closes every project. Same
+   typography as the sections above, inverted: white heading, soft cream text.
+   It bleeds outwards by its own padding so its text lines up with the rest. */
 .outcome {
   margin-inline: calc(var(--outcome-pad) * -1);
-  padding: var(--outcome-pad) calc(var(--outcome-pad) - 1px); /* minus the 1px border */
+  padding: var(--outcome-pad);
   background: var(--outcome-bg);
-  border: 1px solid var(--outcome-border);
-  border-radius: calc(var(--radius) * 0.75);
+  border-radius: calc(var(--radius) * 0.5);
 }
-.outcome .block__label { color: var(--outcome-label); }
+.outcome .block__label { color: #FFFFFF; }
+.outcome .block__body { color: var(--outcome-text); }
+/* Selection on the dark card: a lighter band so it stays visible */
+.outcome .sel-band { background: #5A5853; }
 
 /* ---------- Video poster + viewer ---------- */
 .video-poster {

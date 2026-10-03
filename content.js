@@ -20,19 +20,19 @@ window.CONTENT = {
       "name": "ASTRI",
       "initials": "ASTRI",
       "src": "assets/logos/astri.png",
-      "wide": true
+      "wordmark": true
     },
     "clp": {
       "name": "CLP Power",
       "initials": "CLP",
       "src": "assets/logos/clp.svg",
-      "wide": true
+      "wordmark": true
     },
     "polyu-eee": {
       "name": "PolyU Department of Electrical & Electronic Engineering",
       "initials": "EEE",
       "src": "assets/logos/polyu-eee.png",
-      "wide": true
+      "wordmark": true
     },
     "outlook": {
       "name": "Microsoft Outlook",

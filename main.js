@@ -13,8 +13,8 @@
     const inner = logo.src
       ? `<img src="${esc(logo.src)}" alt="${esc(logo.name)} logo">`
       : `<span aria-label="${esc(logo.name)} logo placeholder">${esc(logo.initials)}</span>`;
-    const wide = logo.wide && logo.src ? " logo--wide" : "";
-    return `<div class="logo logo--${size}${wide} squircle" title="${esc(logo.name)}">${inner}</div>`;
+    const wordmark = logo.wordmark && logo.src ? " logo--wordmark" : "";
+    return `<div class="logo logo--${size}${wordmark} squircle" title="${esc(logo.name)}">${inner}</div>`;
   };
 
   const imagePlaceholder = `
@@ -139,6 +139,24 @@
         </div>
       </article>`)
     .join("");
+
+  /* ---------- Logo tiles: square, as tall as the text beside them ---------- */
+  // The text can wrap to more lines (e.g. a long organisation name), so each
+  // tile follows its text block's height live and stays a perfect square.
+  const sizeLogo = (logo) => {
+    const text = logo.nextElementSibling;
+    if (!text) return;
+    const size = `${Math.round(text.getBoundingClientRect().height)}px`;
+    logo.style.width = size;
+    logo.style.height = size;
+  };
+  const logoTiles = document.querySelectorAll(".logo");
+  logoTiles.forEach(sizeLogo);
+  if ("ResizeObserver" in window) {
+    const ro = new ResizeObserver((entries) =>
+      entries.forEach((e) => sizeLogo(e.target.previousElementSibling)));
+    logoTiles.forEach((logo) => logo.nextElementSibling && ro.observe(logo.nextElementSibling));
+  }
 
   /* ---------- 3D tilt on project photos ---------- */
   // Only the photo frame tilts; the text card stays still. Mouse/trackpad only,

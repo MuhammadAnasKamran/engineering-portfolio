@@ -480,15 +480,17 @@ img { display: block; max-width: 100%; }
 }
 
 /* Detail sections: one shared anatomy (label -> optional title -> body) */
-.block__label {
-  margin: 0 0 8px;
-  font-size: 12px;
+/* Section headings share the decision-title style: bold, body size, sentence case */
+.block__label,
+.insight__title {
+  font-size: 16px;
   font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
 }
+.block__label { margin: 0 0 6px; }
 /* Decisions: grouped under one KEY INSIGHT(S) label by a thin left rule.
    Titles are bold at body size, so they read as lead-ins, not headings. */
 .insights {
@@ -497,13 +499,7 @@ img { display: block; max-width: 100%; }
   padding-left: 16px;
   border-left: 2px solid rgba(25, 25, 25, 0.12);
 }
-.insight__title {
-  margin-bottom: 4px;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.5;
-  color: var(--text);
-}
+.insight__title { margin-bottom: 4px; }
 .block__body {
   font-size: 16px;
   font-weight: 400;

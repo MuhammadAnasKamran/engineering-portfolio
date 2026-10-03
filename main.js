@@ -88,11 +88,13 @@
     </div>`;
 
   /* ---------- Projects ---------- */
-  const block = (label, body, title) => `
-    <div class="block">
-      ${label ? `<p class="block__label">${esc(label)}</p>` : ""}
+  // Every detail section has the same anatomy: small uppercase label, optional
+  // bold title, then body text. Only the outcome adds a tinted box.
+  const block = (label, body, title, extraClass = "") => `
+    <div class="block${extraClass ? ` ${extraClass}` : ""}">
+      <p class="block__label">${esc(label)}</p>
       ${title ? `<h4 class="block__title">${esc(title)}</h4>` : ""}
-      <p>${esc(body)}</p>
+      <p class="block__body">${esc(body)}</p>
     </div>`;
 
   document.getElementById("project-list").innerHTML = projects
@@ -123,11 +125,8 @@
               <div class="project__body">
                 ${block("The problem", p.problem)}
                 ${p.myRole ? block("My role", p.myRole) : ""}
-                ${p.insights.map((i) => block("", i.body, i.title)).join("")}
-                <div class="block outcome">
-                  <p class="block__label">Outcome</p>
-                  <p>${esc(p.outcome)}</p>
-                </div>
+                ${p.insights.map((i) => block("Key insight", i.body, i.title)).join("")}
+                ${block("Outcome", p.outcome, "", "outcome")}
               </div>
             </div>
           </div>

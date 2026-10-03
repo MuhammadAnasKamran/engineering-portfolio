@@ -424,9 +424,13 @@ img { display: block; max-width: 100%; }
   grid-template-rows: 0fr;
   transition: grid-template-rows 700ms var(--ease-premium);
 }
+.project__card { --outcome-pad: 20px; } /* outcome box bleed, see .outcome */
 .details__inner {
   min-height: 0;
   overflow: hidden;
+  /* widen the clip area so the outcome box's outward bleed isn't cut off */
+  margin-inline: calc(var(--outcome-pad) * -1);
+  padding-inline: var(--outcome-pad);
   opacity: 0;
   transform: translate3d(0, -8px, 0);
   transition:
@@ -475,10 +479,12 @@ img { display: block; max-width: 100%; }
   gap: 28px;
 }
 
+/* Detail sections: one shared anatomy (label -> optional title -> body) */
 .block__label {
   margin-bottom: 8px;
   font-size: 12px;
   font-weight: 700;
+  line-height: 1.4;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-tertiary);
@@ -489,17 +495,24 @@ img { display: block; max-width: 100%; }
   font-weight: 700;
   line-height: 1.35;
 }
-.block p { color: #333333; }
+.block__body {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #333333;
+}
 
-/* Level 3: Outcome */
+/* Level 3: Outcome. Same typography as every other section; it stands out
+   only through its tinted box and green label. The box bleeds outwards by its
+   own padding so the label and text line up with the text above. */
 .outcome {
-  padding: 24px;
+  margin-inline: calc(var(--outcome-pad) * -1);
+  padding: var(--outcome-pad) calc(var(--outcome-pad) - 1px); /* minus the 1px border */
   background: var(--outcome-bg);
   border: 1px solid var(--outcome-border);
   border-radius: calc(var(--radius) * 0.75);
 }
 .outcome .block__label { color: var(--outcome-label); }
-.outcome p { color: var(--text); font-size: 17px; font-weight: 500; }
 
 /* ---------- Video poster + viewer ---------- */
 .video-poster {
@@ -658,6 +671,6 @@ img { display: block; max-width: 100%; }
   .intro__edu { padding-top: 24px; gap: 16px; }
   .project__card { padding: 28px 22px; }
   .project__desc { font-size: 17px; }
-  .outcome { padding: 20px; }
+  .project__card { --outcome-pad: 14px; }
   .section-head { margin: 64px 0 28px; }
 }

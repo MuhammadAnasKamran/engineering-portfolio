@@ -82,13 +82,16 @@ body::before {
 /* Custom cursor: rounded black arrow with a white rim (assets/cursor/).
    Hotspot (5, 4) is the arrow tip on the 24px image. Used everywhere, including links and
    buttons, which signal they're clickable through their hover states.
-   Later declarations win only where the browser supports them. */
+   */
 @media (hover: hover) and (pointer: fine) {
   html,
   html * {
-    cursor: url("assets/cursor/cursor.png") 5 4, auto;
-    cursor: -webkit-image-set(url("assets/cursor/cursor.png") 1x, url("assets/cursor/cursor@2x.png") 2x) 5 4, auto;
-    cursor: image-set(url("assets/cursor/cursor.png") 1x, url("assets/cursor/cursor@2x.png") 2x) 5 4, auto;
+    /* Plain PNG works everywhere; the -webkit-image-set line adds the sharp 2x
+       image in Safari/Chrome. (Unprefixed image-set() is left out on purpose:
+       Safari parses it but can't draw it as a cursor, so it fell back to the
+       system arrow.) */
+    cursor: url("assets/cursor/cursor.png?v=2") 5 4, auto;
+    cursor: -webkit-image-set(url("assets/cursor/cursor.png?v=2") 1x, url("assets/cursor/cursor@2x.png?v=2") 2x) 5 4, auto;
   }
 }
 

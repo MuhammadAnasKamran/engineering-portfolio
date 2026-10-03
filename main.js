@@ -57,6 +57,7 @@
     return `
       <div class="media-frame squircle" style="aspect-ratio:${esc(media.aspect || "4 / 3")}">
         ${slides || imagePlaceholder}
+        <span class="media-glare" aria-hidden="true"></span>
       </div>
       ${thumbs}`;
   };
@@ -139,6 +140,51 @@
         </div>
       </article>`)
     .join("");
+
+  /* ---------- 3D tilt on project photos ---------- */
+  // Only the photo frame tilts; the text card stays still. Mouse/trackpad only,
+  // and skipped entirely for visitors who prefer reduced motion.
+  const canTilt =
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (canTilt) {
+    const MAX_TILT = 8; // degrees
+    document.querySelectorAll(".project__media .media-frame").forEach((frame) => {
+      let frameId = 0;
+      let pointer = { x: 0.5, y: 0.5 };
+
+      const render = () => {
+        frameId = 0;
+        const rotateY = (pointer.x - 0.5) * 2 * MAX_TILT;  // left/right
+        const rotateX = (0.5 - pointer.y) * 2 * MAX_TILT;  // up/down
+        frame.style.transform =
+          `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(1.02)`;
+        frame.style.setProperty("--glare-x", `${(pointer.x * 100).toFixed(1)}%`);
+        frame.style.setProperty("--glare-y", `${(pointer.y * 100).toFixed(1)}%`);
+      };
+
+      frame.addEventListener("pointerenter", () => frame.classList.add("is-tilting"));
+
+      frame.addEventListener("pointermove", (e) => {
+        // Measure the untransformed parent (the frame sits at its top-left) so the
+        // tilt itself doesn't skew the reading; fresh each move survives scrolling.
+        const origin = frame.parentElement.getBoundingClientRect();
+        pointer = {
+          x: Math.min(Math.max((e.clientX - origin.left) / frame.offsetWidth, 0), 1),
+          y: Math.min(Math.max((e.clientY - origin.top) / frame.offsetHeight, 0), 1),
+        };
+        if (!frameId) frameId = requestAnimationFrame(render); // one update per frame
+      });
+
+      frame.addEventListener("pointerleave", () => {
+        cancelAnimationFrame(frameId);
+        frameId = 0;
+        frame.classList.remove("is-tilting");
+        frame.style.transform = ""; // springs back via the CSS transition
+      });
+    });
+  }
 
   /* ---------- Photo thumbnails ---------- */
   document.getElementById("project-list").addEventListener("click", (e) => {

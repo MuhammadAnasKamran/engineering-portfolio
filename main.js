@@ -88,14 +88,39 @@
     </div>`;
 
   /* ---------- Projects ---------- */
-  // Every detail section has the same anatomy: small uppercase label, optional
-  // bold title, then body text. Only the outcome adds a tinted box.
-  const block = (label, body, title, extraClass = "") => `
-    <div class="block${extraClass ? ` ${extraClass}` : ""}">
-      <p class="block__label">${esc(label)}</p>
-      ${title ? `<h4 class="block__title">${esc(title)}</h4>` : ""}
-      <p class="block__body">${esc(body)}</p>
+  // Reusable template for everything below the divider on every project.
+  // One hierarchy throughout: each section = small uppercase label + content,
+  // with identical spacing between sections.
+  //   THE PROBLEM   -> paragraph
+  //   MY ROLE       -> paragraph (skipped when a project has none)
+  //   KEY INSIGHT(S)-> one label for all decisions; each decision is a bold
+  //                    body-size line + paragraph, grouped by a thin left rule
+  //   OUTCOME       -> paragraph in the green box
+  const section = (label, content, extraClass = "") => `
+    <section class="block${extraClass ? ` ${extraClass}` : ""}">
+      <h4 class="block__label">${esc(label)}</h4>
+      ${content}
+    </section>`;
+
+  const paragraph = (text) => `<p class="block__body">${esc(text)}</p>`;
+
+  const insightsGroup = (insights) => `
+    <div class="insights">
+      ${insights.map((i) => `
+        <div class="insight">
+          <p class="insight__title">${esc(i.title)}</p>
+          ${paragraph(i.body)}
+        </div>`).join("")}
     </div>`;
+
+  const projectDetails = (p) => [
+    section("The problem", paragraph(p.problem)),
+    p.myRole ? section("My role", paragraph(p.myRole)) : "",
+    p.insights.length
+      ? section(p.insights.length > 1 ? "Key insights" : "Key insight", insightsGroup(p.insights))
+      : "",
+    section("Outcome", paragraph(p.outcome), "outcome"),
+  ].join("");
 
   document.getElementById("project-list").innerHTML = projects
     .map((p) => `
@@ -123,10 +148,7 @@
           <div class="details" id="${esc(p.id)}-details">
             <div class="details__inner" inert>
               <div class="project__body">
-                ${block("The problem", p.problem)}
-                ${p.myRole ? block("My role", p.myRole) : ""}
-                ${p.insights.map((i) => block("Key insight", i.body, i.title)).join("")}
-                ${block("Outcome", p.outcome, "", "outcome")}
+                ${projectDetails(p)}
               </div>
             </div>
           </div>

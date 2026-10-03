@@ -481,7 +481,7 @@ img { display: block; max-width: 100%; }
 
 /* Detail sections: one shared anatomy (label -> optional title -> body) */
 .block__label {
-  margin-bottom: 8px;
+  margin: 0 0 8px;
   font-size: 12px;
   font-weight: 700;
   line-height: 1.4;
@@ -489,11 +489,20 @@ img { display: block; max-width: 100%; }
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
-.block__title {
-  margin-bottom: 6px;
-  font-size: 18px;
+/* Decisions: grouped under one KEY INSIGHT(S) label by a thin left rule.
+   Titles are bold at body size, so they read as lead-ins, not headings. */
+.insights {
+  display: grid;
+  gap: 18px;
+  padding-left: 16px;
+  border-left: 2px solid rgba(25, 25, 25, 0.12);
+}
+.insight__title {
+  margin-bottom: 4px;
+  font-size: 16px;
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.5;
+  color: var(--text);
 }
 .block__body {
   font-size: 16px;

@@ -79,6 +79,19 @@ body::before {
           mask-image: radial-gradient(ellipse 120% 90% at 50% 30%, #000 40%, transparent 100%);
 }
 
+/* Custom cursor: rounded black arrow with a white rim (assets/cursor/).
+   Hotspot (6, 4) is the arrow tip. Used everywhere, including links and
+   buttons, which signal they're clickable through their hover states.
+   Later declarations win only where the browser supports them. */
+@media (hover: hover) and (pointer: fine) {
+  html,
+  html * {
+    cursor: url("assets/cursor/cursor.png") 6 4, auto;
+    cursor: -webkit-image-set(url("assets/cursor/cursor.png") 1x, url("assets/cursor/cursor@2x.png") 2x) 6 4, auto;
+    cursor: image-set(url("assets/cursor/cursor.png") 1x, url("assets/cursor/cursor@2x.png") 2x) 6 4, auto;
+  }
+}
+
 /* Text selection: soft off-black instead of the browser's default blue */
 ::selection {
   background: var(--selection-bg);
@@ -304,7 +317,6 @@ img { display: block; max-width: 100%; }
   border: 2px solid transparent;
   border-radius: calc(var(--radius) * 0.45);
   background: var(--surface);
-  cursor: pointer;
   opacity: 0.55;
   transition: opacity 250ms ease, border-color 250ms ease, transform 250ms var(--ease-premium);
 }
@@ -414,7 +426,6 @@ img { display: block; max-width: 100%; }
   font: inherit;
   font-size: 14px;
   font-weight: 600;
-  cursor: pointer;
   transition: background-color 200ms ease, transform 200ms var(--ease-premium);
 }
 .read-more:hover { background: #EDEBE6; }
@@ -472,7 +483,6 @@ img { display: block; max-width: 100%; }
   padding: 0;
   border: 0;
   background: #1D3461;
-  cursor: pointer;
 }
 .video-poster img { width: 100%; height: 100%; object-fit: cover; }
 .video-poster__play {
@@ -544,7 +554,6 @@ img { display: block; max-width: 100%; }
   border: 0;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.92);
-  cursor: pointer;
 }
 .video-dialog__close svg { width: 20px; height: 20px; fill: none; stroke: var(--text); stroke-width: 2.2; stroke-linecap: round; }
 .video-dialog__close:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }

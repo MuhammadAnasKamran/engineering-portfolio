@@ -403,6 +403,7 @@
     const button = e.target.closest(".read-more");
     if (!button) return;
     const card = button.closest(".project__card");
+    if (card.dataset.collapsing) return; // ignore taps while "Show less" is animating
     const inner = card.querySelector(".details__inner");
     const open = button.getAttribute("aria-expanded") !== "true";
 
@@ -414,43 +415,84 @@
       card.classList.add("is-open");
       return;
     }
-
-    // Collapsing: if the project's top is above the screen, scroll back up to it
-    // FIRST and only then collapse. Doing both at once made the two motions fight
-    // (and the page could clamp near the bottom), which showed up as a jitter.
-    const project = card.closest(".project");
-    const top = project.getBoundingClientRect().top;
-    if (top >= 0) {
-      card.classList.remove("is-open");
-      return;
-    }
-    const target = Math.max(0, window.scrollY + top - 16);
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: target, behavior: reduce ? "auto" : "smooth" });
-    waitForScrollEnd(target).then(() => card.classList.remove("is-open"));
+    collapseCard(card);
   });
 
-  // Resolves once scrolling has settled at the target (or after a safety timeout).
-  // Uses polling because the "scrollend" event isn't available in every browser.
-  function waitForScrollEnd(target) {
-    return new Promise((resolve) => {
-      const started = performance.now();
-      let lastY = window.scrollY, still = 0;
-      const tick = () => {
-        const y = window.scrollY;
-        still = Math.abs(y - lastY) < 0.5 ? still + 1 : 0;
-        lastY = y;
-        const arrived = Math.abs(y - target) < 2 && still >= 2;
-        if (arrived || still >= 6 || performance.now() - started > 1200) resolve();
-        else requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-      setTimeout(resolve, 1300); // hard fallback if frames are throttled (e.g. background tab)
-    });
+  // "Show less" as ONE motion: the section shrinks and the page glides up to the
+  // project's top at exactly the same rate, frame by frame, using the same
+  // duration and curve as "Read more" (850ms, ease-in-out).
+  const EXPAND_MS = 850;
+  const easeInOut = cubicBezier(0.45, 0, 0.2, 1);
+
+  function collapseCard(card) {
+    const project = card.closest(".project");
+    const details = card.querySelector(".details");
+    const inner = card.querySelector(".details__inner");
+    const startH = details.getBoundingClientRect().height;
+    const startY = window.scrollY;
+    const top = project.getBoundingClientRect().top;
+    // Only scroll if the project's top is off-screen. Near the bottom of the page
+    // the collapsed page may be too short to scroll that far, so aim no further
+    // than the collapsed page allows; otherwise the browser clamps the scroll
+    // mid-animation and it jumps ahead of the shrinking section.
+    const maxYAfter = document.documentElement.scrollHeight - startH - window.innerHeight;
+    const wantedY = top < 0 ? Math.max(0, startY + top - 16) : startY;
+    const targetY = Math.max(0, Math.min(wantedY, maxYAfter, startY));
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || startH < 1) {
+      card.classList.remove("is-open");
+      window.scrollTo(0, targetY);
+      return;
+    }
+
+    // Hand the animation to JS for its duration (CSS transitions off).
+    card.dataset.collapsing = "1";
+    details.style.transition = "none";
+    inner.style.transition = "none";
+    details.style.gridTemplateRows = `${startH}px`;
+
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      card.classList.remove("is-open");
+      details.style.gridTemplateRows = "";
+      inner.style.opacity = "";
+      window.scrollTo(0, targetY);
+      void details.offsetHeight; // commit the closed state before re-enabling transitions
+      details.style.transition = "";
+      inner.style.transition = "";
+      delete card.dataset.collapsing;
+    };
+
+    const t0 = performance.now();
+    const step = (now) => {
+      if (done) return;
+      const p = Math.min(1, (now - t0) / EXPAND_MS);
+      const e = easeInOut(p);
+      details.style.gridTemplateRows = `${startH * (1 - e)}px`;
+      inner.style.opacity = String(Math.max(0, 1 - p * 1.6)); // text fades out a little ahead of the height
+      window.scrollTo(0, startY + (targetY - startY) * e);
+      if (p < 1) requestAnimationFrame(step);
+      else finish();
+    };
+    requestAnimationFrame(step);
+    setTimeout(finish, EXPAND_MS + 400); // safety net if frames are throttled (background tab)
   }
 
-  document.getElementById("footer-text").textContent =
-    `© ${new Date().getFullYear()} ${profile.name}`;
+  // CSS-style cubic-bezier easing (x = time, y = progress), solved by bisection.
+  function cubicBezier(x1, y1, x2, y2) {
+    const at = (a, b, t) => 3 * (1 - t) * (1 - t) * t * a + 3 * (1 - t) * t * t * b + t * t * t;
+    return (x) => {
+      let lo = 0, hi = 1;
+      for (let k = 0; k < 24; k++) {
+        const t = (lo + hi) / 2;
+        if (at(x1, x2, t) < x) lo = t; else hi = t;
+      }
+      return at(y1, y2, (lo + hi) / 2);
+    };
+  }
 
   /* ---------- Scroll reveal: one element at a time as it enters view ---------- */
   const targets = document.querySelectorAll(".reveal");

@@ -1,0 +1,6 @@
+# Local tooling
+.claude/
+.DS_Store
+
+# Source notes (content already lives in content.js)
+Portfolio Project Bank Hardware & EE.md

@@ -438,6 +438,10 @@ img { display: block; max-width: 100%; }
 .details__inner {
   min-height: 0;
   overflow: hidden;
+  /* Widen the clip box a little so the heading highlight's 5px left padding
+     (which sits outside the text column) isn't cut off. */
+  margin-inline: -8px;
+  padding-inline: 8px;
   opacity: 0;
   transform: translate3d(0, -12px, 0);
   transition:
@@ -774,6 +778,9 @@ img { display: block; max-width: 100%; }
 }
 
 @media (max-width: 600px) {
+  /* Phones: one consistent stack for every card, left-aligned:
+     role, then date, then organisation. */
+  .project__meta-line { flex-direction: column; align-items: flex-start; }
   :root { --gutter: 16px; }
   .page { padding-top: 24px; }
   .intro { padding: 28px 24px; gap: 24px; }

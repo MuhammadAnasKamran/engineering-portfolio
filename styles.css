@@ -17,9 +17,8 @@
   --radius-pill: 999px;
 
   /* Background grid + selection */
-  --grid: 24px;
-  --grid-dot: rgba(25, 25, 25, 0.16);
-  --grid-line: rgba(25, 25, 25, 0.04);
+  --grid: 22px;
+  --grid-dot: rgba(25, 25, 25, 0.11);
   --selection-bg: #2B2B2B;
   --heading-mark: #ECE9E2;  /* soft warm grey behind section headings */
 
@@ -60,27 +59,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Engineering-paper backdrop: a fine dot grid with faint major lines every
-   5 cells, like a cutting mat or graph paper. It sits on a fixed layer so it
-   costs nothing while scrolling, and fades out toward the edges. */
+/* Backdrop: a soft dot grid on cream, like an engineering notebook. Dots only
+   (no major lines) so it stays quiet behind the cards. It sits on a fixed
+   layer so it costs nothing while scrolling, and fades out toward the edges. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image:
-    radial-gradient(circle, var(--grid-dot) 1px, transparent 1.4px),
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size:
-    var(--grid) var(--grid),
-    calc(var(--grid) * 5) calc(var(--grid) * 5),
-    calc(var(--grid) * 5) calc(var(--grid) * 5);
-  background-position:
-    calc(var(--grid) / -2) calc(var(--grid) / -2),
-    -1px -1px,
-    -1px -1px;
+  background-image: radial-gradient(circle, var(--grid-dot) 0.9px, transparent 1.3px);
+  background-size: var(--grid) var(--grid);
+  background-position: calc(var(--grid) / -2) calc(var(--grid) / -2);
   -webkit-mask-image: radial-gradient(ellipse 120% 90% at 50% 30%, #000 40%, transparent 100%);
           mask-image: radial-gradient(ellipse 120% 90% at 50% 30%, #000 40%, transparent 100%);
 }

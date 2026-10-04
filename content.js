@@ -46,7 +46,7 @@ window.CONTENT = {
       "name": "Control Board for GPU Immersion Cooling",
       "description": "A 4-layer ESP32-S3 board to run, monitor and protect a single-GPU immersion cooling rig.",
       "role": "Summer Intern",
-      "organization": "Hong Kong Applied Science and Technology Research Institute (ASTRI)",
+      "organization": "ASTRI",
       "dates": "Jun – Aug 2026",
       "skills": [
         "ESP32-S3",
@@ -85,7 +85,7 @@ window.CONTENT = {
       "name": "AI Drawing Tool for 2D CAD Diagrams",
       "description": "A pipeline that turns an electrical part number into a standards-compliant 2D engineering drawing.",
       "role": "Summer Intern",
-      "organization": "Hong Kong Applied Science and Technology Research Institute (ASTRI)",
+      "organization": "ASTRI",
       "dates": "Jun – Aug 2026",
       "skills": [
         "Python",

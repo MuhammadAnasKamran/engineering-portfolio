@@ -68,7 +68,6 @@
   /* ---------- Intro ---------- */
   document.getElementById("intro").innerHTML = `
     <div>
-      <p class="eyebrow">Portfolio</p>
       <h1 class="intro__name">${esc(profile.name)}</h1>
       <p class="intro__headline">${esc(profile.headline)}</p>
     </div>
@@ -136,10 +135,12 @@
         <div class="project__card squircle">
           <div class="project__meta">
             ${logoHTML(p.logo, "sm")}
-            <div>
-              <p class="project__role">${esc(p.role)}</p>
+            <div class="project__meta-text">
+              <p class="project__meta-line">
+                <span class="project__role">${esc(p.role)}</span>
+                <span class="project__dates">${esc(p.dates)}</span>
+              </p>
               <p class="project__org">${esc(p.organization)}</p>
-              <p class="project__dates">${esc(p.dates)}</p>
             </div>
           </div>
 

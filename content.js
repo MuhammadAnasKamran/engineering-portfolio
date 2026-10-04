@@ -46,7 +46,7 @@ window.CONTENT = {
       "name": "Control Board for GPU Immersion Cooling",
       "description": "A 4-layer ESP32-S3 board to run, monitor and protect a single-GPU immersion cooling rig.",
       "role": "Summer Intern",
-      "organization": "ASTRI, NAMI Discovery Track",
+      "organization": "Hong Kong Applied Science and Technology Research Institute (ASTRI)",
       "dates": "Jun – Aug 2026",
       "skills": [
         "ESP32-S3",
@@ -85,7 +85,7 @@ window.CONTENT = {
       "name": "AI Drawing Tool for 2D CAD Diagrams",
       "description": "A pipeline that turns an electrical part number into a standards-compliant 2D engineering drawing.",
       "role": "Summer Intern",
-      "organization": "ASTRI, NAMI Discovery Track",
+      "organization": "Hong Kong Applied Science and Technology Research Institute (ASTRI)",
       "dates": "Jun – Aug 2026",
       "skills": [
         "Python",
@@ -124,7 +124,7 @@ window.CONTENT = {
       "name": "CLP Generator Inspection Robot",
       "description": "A ring-shaped robot that clamps around a power-station generator to check it for current leakage.",
       "role": "Industrial Project Trainee",
-      "organization": "Dept. of Electrical & Electronic Engineering, PolyU · Industry project with CLP",
+      "organization": "Dept. of EEE, PolyU · Industry project with CLP",
       "dates": "Jul – Aug 2025",
       "skills": [
         "Shapr3D",
@@ -162,8 +162,8 @@ window.CONTENT = {
       "id": "underwater-rov",
       "name": "Underwater Robot (ROV)",
       "description": "A small underwater robot built for the EEE Mini ROV Contest, placing 4th overall.",
-      "role": "Electrical team member",
-      "organization": "EEE Mini ROV Contest, PolyU · Team of 6",
+      "role": "Electrical Team Member",
+      "organization": "EEE Mini ROV Contest, PolyU",
       "dates": "Oct 2025",
       "skills": [
         "Arduino",
@@ -200,8 +200,8 @@ window.CONTENT = {
       "id": "generator-power-monitor",
       "name": "Power Monitor for a 3-Phase Generator",
       "description": "An Arduino-based monitor that measures the output of a team-built 3-phase axial-flux generator.",
-      "role": "Team of 8",
-      "organization": "Industrial Centre, PolyU",
+      "role": "Coursework Project",
+      "organization": "Dept. of EEE, PolyU",
       "dates": "Feb – Apr 2025",
       "skills": [
         "Arduino",
@@ -243,7 +243,7 @@ window.CONTENT = {
       "id": "robotic-arm-cad",
       "name": "Robotic Arm Design (CAD)",
       "description": "A six-joint pick-and-place arm designed and motion-tested in SOLIDWORKS.",
-      "role": "Solo coursework",
+      "role": "Coursework Project",
       "organization": "Industrial Centre, PolyU",
       "dates": "Feb – Apr 2025",
       "skills": [

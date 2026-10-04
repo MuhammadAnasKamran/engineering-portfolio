@@ -175,7 +175,7 @@ img { display: block; max-width: 100%; }
    narrow screens, where the text wraps onto many lines, the text keeps the
    width instead of the logo. Capping both sides keeps the tile square. */
 .logo--lg { width: 64px; font-size: 15px; max-width: 72px; max-height: 72px; }
-.logo--sm { width: 56px; max-width: 64px; max-height: 64px; }
+.logo--sm { width: 56px; min-width: 52px; min-height: 52px; max-width: 56px; max-height: 56px; } /* consistent card to card */
 
 /* ---------- Intro ---------- */
 .intro {
@@ -379,9 +379,19 @@ img { display: block; max-width: 100%; }
   gap: 14px;
   margin-bottom: 24px;
 }
+/* Line 1: role (bold) left, date right-aligned. If they don't fit on one line
+   (narrow screens), the date wraps underneath instead of overlapping. */
+.project__meta-text { flex: 1; min-width: 0; }
+.project__meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  column-gap: 12px;
+}
 .project__role { font-size: 15px; font-weight: 600; line-height: 1.35; }
 .project__org  { font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
-.project__dates { font-size: 13px; color: var(--text-tertiary); }
+.project__dates { font-size: 13px; line-height: 1.35; color: var(--text-tertiary); white-space: nowrap; }
 
 /* Level 1: Project name */
 .project__name {

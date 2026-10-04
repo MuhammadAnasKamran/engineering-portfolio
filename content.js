@@ -114,6 +114,7 @@ window.CONTENT = {
             "src": "assets/video/ai-cad-drawing-demo.mp4?v=1",
             "poster": "assets/projects/ai-cad-drawing-poster.jpg",
             "videoAspect": "20 / 11",
+            "label": "Watch demo · 0:53",
             "alt": "Demo video of the AI drawing tool generating a 2D drawing from a part number"
           }
         ]

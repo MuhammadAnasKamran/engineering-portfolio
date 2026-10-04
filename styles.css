@@ -598,37 +598,40 @@ img { display: block; max-width: 100%; }
   background: #1D3461;
 }
 .video-poster img { width: 100%; height: 100%; object-fit: cover; }
-.video-poster__play {
+/* Play button: one ink pill in the corner, echoing the Read more row
+   (ink + a circle icon) and leaving the poster itself uncovered. */
+.video-cta {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 68px;
-  height: 68px;
+  left: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px 6px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-pill);
+  background: var(--outcome-bg);
+  color: #F3F1EC;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color 200ms ease;
+}
+.video-cta__icon {
+  width: 30px;
+  height: 30px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  transform: translate(-50%, -50%);
-  transition: transform 300ms var(--ease-premium), background-color 200ms ease;
+  background: #F3F1EC;
+  transition: transform 300ms var(--ease-premium);
 }
-/* Triangle is drawn ~1px right of the box centre inside the icon: optical centring */
-.video-poster__play svg { width: 28px; height: 28px; fill: var(--text); }
-.video-poster:hover .video-poster__play { transform: translate(-50%, -50%) scale(1.08); background: #FFFFFF; }
-.video-poster:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
-.video-poster__label {
-  position: absolute;
-  left: 50%;
-  bottom: 18px;
-  transform: translateX(-50%);
-  padding: 5px 12px;
-  border-radius: var(--radius-pill);
-  background: rgba(25, 25, 25, 0.55);
-  color: #FFFFFF;
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-}
+/* triangle drawn ~1px right of centre in its box: optical centring */
+.video-cta__icon svg { width: 14px; height: 14px; fill: var(--outcome-bg); }
+.video-poster:hover .video-cta { background: #000000; }
+.video-poster:hover .video-cta__icon { transform: scale(1.08); }
+.video-poster:active .video-cta__icon { transform: scale(0.94); }
 
 .video-dialog {
   width: min(1100px, 100vw - 32px);
@@ -786,6 +789,7 @@ img { display: block; max-width: 100%; }
   .intro { padding: 28px 24px; gap: 24px; }
   .intro__edu { padding-top: 24px; gap: 16px; }
   .project { --card-pad-x: 22px; }
+  .video-cta { left: 12px; bottom: 12px; font-size: 13px; }
   .project__card { --footer-space: 16px; --card-pad-x: 22px; padding: 24px var(--card-pad-x) var(--footer-space); }
   .logo--lg { max-width: 56px; max-height: 56px; }
   .logo--sm { max-width: 52px; max-height: 52px; }

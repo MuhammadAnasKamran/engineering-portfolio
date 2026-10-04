@@ -299,8 +299,18 @@
   const lockMediaHeight = (card) => {
     const details = card.querySelector(".details");
     const media = card.parentElement.querySelector(".project__media");
-    const collapsed = card.offsetHeight - (details ? details.offsetHeight : 0);
-    media.style.setProperty("--card-h", `${collapsed}px`);
+    // Exact fractional LAYOUT sizes. offsetHeight rounds each value separately,
+    // so mid-animation their difference flickered by 1px every frame and the
+    // photo's bottom edge vibrated during "Read more". getBoundingClientRect
+    // would include the reveal animation's scale, so use computed heights.
+    const layoutHeight = (el) => parseFloat(getComputedStyle(el).height) || 0;
+    const collapsed = layoutHeight(card) - (details ? layoutHeight(details) : 0);
+    const current = parseFloat(media.style.getPropertyValue("--card-h"));
+    // The collapsed height doesn't change while a card opens or closes, so
+    // ignore sub-pixel noise and only update on a real change (text reflow,
+    // resize, fonts loading).
+    if (!Number.isNaN(current) && Math.abs(collapsed - current) < 0.5) return;
+    media.style.setProperty("--card-h", `${collapsed.toFixed(2)}px`);
   };
   const cards = document.querySelectorAll(".project__card");
   const lockAll = () => cards.forEach(lockMediaHeight);

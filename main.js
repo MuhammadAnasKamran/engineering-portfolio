@@ -1,12 +1,20 @@
 (function () {
   "use strict";
 
+  // Clickjacking guard: GitHub Pages can't send X-Frame-Options, so if another
+  // site embeds this page in a frame, break out of it (or hide the page).
+  if (window.top !== window.self) {
+    try { window.top.location = window.self.location.href; }
+    catch (err) { document.documentElement.style.display = "none"; return; }
+  }
+
   const { profile, logos, projects } = window.CONTENT;
   document.documentElement.classList.add("js");
 
   // Start at the top on refresh instead of restoring the old scroll position
+  // (a shared link to a project, e.g. #ai-cad-drawing, is honoured after render)
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-  window.scrollTo(0, 0);
+  if (!location.hash) window.scrollTo(0, 0);
 
   const esc = (s) =>
     String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -68,6 +76,7 @@
   };
 
   /* ---------- Intro ---------- */
+  const email = `${profile.email.user}@${profile.email.domain}`;
   document.getElementById("intro").innerHTML = `
     <div>
       <h1 class="intro__name">${esc(profile.name)}</h1>
@@ -82,11 +91,11 @@
       </div>
     </div>
     <div class="intro__actions">
-      <a class="button button--linkedin" href="${esc(profile.linkedin)}" target="_blank" rel="noopener">
+      <a class="button button--linkedin" href="${esc(profile.linkedin)}" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
         LinkedIn
       </a>
-      <a class="button button--outlook" href="mailto:${esc(profile.email)}" title="${esc(profile.email)}">
+      <a class="button button--outlook" href="mailto:${esc(email)}" title="${esc(email)}">
         <img class="button__icon" src="${esc(logos.outlook.src)}" alt="" aria-hidden="true">
         Outlook
       </a>
@@ -94,13 +103,13 @@
 
   /* ---------- Projects ---------- */
   // Reusable template for everything below the divider on every project.
-  // One hierarchy throughout: each section = small uppercase label + content,
-  // with identical spacing between sections.
-  //   THE PROBLEM   -> paragraph
-  //   MY ROLE       -> paragraph (skipped when a project has none)
-  //   KEY INSIGHT(S)-> one label for all decisions; each decision is a bold
-  //                    body-size line + paragraph, grouped by a thin left rule
-  //   OUTCOME       -> paragraph in the green box
+  // One hierarchy throughout: each section = heading + content, with identical
+  // spacing between sections.
+  //   The problem    -> paragraph
+  //   My role        -> paragraph (skipped when a project has none)
+  //   Key insight(s) -> one heading for all decisions; each decision is a bold
+  //                     body-size line + paragraph, grouped by a thin left rule
+  //   Outcome        -> paragraph in the dark finale card
   const section = (label, content, extraClass = "") => `
     <section class="block${extraClass ? ` ${extraClass}` : ""}">
       <h4 class="block__label"><span class="block__label-text">${esc(label)}</span></h4>
@@ -197,6 +206,7 @@
 
   if (canTilt) {
     const MAX_TILT = 8; // degrees
+    const sideBySide = window.matchMedia("(min-width: 861px)");
     document.querySelectorAll(".project__media .media-frame").forEach((frame) => {
       let frameId = 0;
       let pointer = { x: 0.5, y: 0.5 };
@@ -212,6 +222,7 @@
       frame.addEventListener("pointerenter", () => frame.classList.add("is-tilting"));
 
       frame.addEventListener("pointermove", (e) => {
+        if (!sideBySide.matches) return;
         // Measure the untransformed parent (the frame sits at its top-left) so the
         // tilt itself doesn't skew the reading; fresh each move survives scrolling.
         const origin = frame.parentElement.getBoundingClientRect();
@@ -248,6 +259,7 @@
   // Videos open large in a dialog so the player is never squeezed or clipped by card corners.
   const dialog = document.createElement("dialog");
   dialog.className = "video-dialog";
+  dialog.setAttribute("aria-label", "Project demo video");
   dialog.innerHTML = `
     <div class="video-dialog__frame"></div>
     <button class="video-dialog__close" type="button" aria-label="Close video">
@@ -262,6 +274,7 @@
     const v = dialogFrame.querySelector("video");
     if (v) v.pause();
     dialogFrame.innerHTML = "";
+    document.documentElement.classList.remove("dialog-open"); // let the page scroll again
   };
   const closeVideo = () => { stopVideo(); dialog.close(); };
   dialog.addEventListener("cancel", stopVideo); // Esc key
@@ -274,14 +287,16 @@
     if (!poster) return;
     const [w, h] = poster.dataset.aspect.split("/").map(Number);
     dialogFrame.style.aspectRatio = `${w} / ${h}`;
-    // Fit both width and height of the window so the whole video is always visible.
-    dialog.style.width = `min(1100px, calc(100vw - 32px), calc((100vh - 120px) * ${w / h}))`;
+    // Fit both width and height of the window so the whole video is always
+    // visible. dvh = the visible height on phones (excludes the address bar).
+    const vh = CSS.supports("height", "1dvh") ? "100dvh" : "100vh";
+    dialog.style.width = `min(1100px, calc(100vw - 32px), calc((${vh} - 120px) * ${w / h}))`;
     const src = poster.dataset.video;
-    // Self-hosted files play in the browser's own player: it always fits the
-    // whole frame (no cropping on phones) and supports native full screen.
-    dialogFrame.innerHTML = /\.(mp4|webm)(\?|$)/.test(src)
-      ? `<video src="${esc(src)}" title="${esc(poster.dataset.title)}" controls autoplay muted playsinline preload="auto"></video>`
-      : `<iframe src="${esc(src)}" title="${esc(poster.dataset.title)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+    // Only same-site video files are played (in the browser's own player: it
+    // always fits the whole frame and supports native full screen).
+    if (!/^assets\/video\/[\w.-]+\.(mp4|webm)(\?v=\d+)?$/.test(src)) return;
+    dialogFrame.innerHTML =
+      `<video src="${esc(src)}" title="${esc(poster.dataset.title)}" controls autoplay muted playsinline preload="auto"></video>`;
     // The demo is long and silent, so play it at 2x by default (still changeable
     // from the player's own speed menu).
     const video = dialogFrame.querySelector("video");
@@ -290,6 +305,7 @@
       video.playbackRate = 2;
     }
     dialog.showModal();
+    document.documentElement.classList.add("dialog-open"); // stop the page scrolling behind
   });
 
   /* ---------- Photo height follows the collapsed card ---------- */
@@ -319,7 +335,12 @@
   window.addEventListener("load", lockAll);                  // after images/fonts settle
   if (document.fonts) document.fonts.ready.then(lockAll);
   if ("ResizeObserver" in window) {                          // text reflow, wrapping, etc.
-    const cardRO = new ResizeObserver((entries) => entries.forEach((e) => lockMediaHeight(e.target)));
+    const cardRO = new ResizeObserver((entries) => {
+      entries.forEach((e) => lockMediaHeight(e.target));
+      // keep selection bands on moving text (observer callbacks run after this
+      // script has finished, so scheduleSelection below is defined by then)
+      scheduleSelection();
+    });
     cards.forEach((card) => cardRO.observe(card));
   }
 
@@ -477,6 +498,7 @@
       details.style.transition = "";
       inner.style.transition = "";
       delete card.dataset.collapsing;
+      scheduleSelection();
     };
 
     const t0 = performance.now();
@@ -505,6 +527,14 @@
       }
       return at(y1, y2, (lo + hi) / 2);
     };
+  }
+
+  /* ---------- Shared links to a project ---------- */
+  if (location.hash) {
+    const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (target && target.classList.contains("project")) {
+      requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+    }
   }
 
   /* ---------- Scroll reveal: one element at a time as it enters view ---------- */

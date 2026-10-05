@@ -677,6 +677,9 @@ img { display: block; max-width: 100%; }
 .video-dialog__close svg { width: 20px; height: 20px; fill: none; stroke: var(--text); stroke-width: 2.2; stroke-linecap: round; }
 .video-dialog__close:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
 
+/* While the video viewer is open, the page behind it doesn't scroll */
+html.dialog-open { overflow: hidden; }
+
 /* ---------- Footer ---------- */
 .footer {
   max-width: var(--page-width);
@@ -796,4 +799,19 @@ img { display: block; max-width: 100%; }
   .outcome { padding: 18px 18px 20px; border-radius: 20px; }
   .project__desc { font-size: 17px; }
   .section-head { margin: 64px 0 28px; }
+}
+
+/* ---------- Print / save as PDF ---------- */
+/* Everything visible and expanded: no fade-in states, all "Read more"
+   sections open, no interactive chrome. */
+@media print {
+  body::before { display: none; }
+  .js .reveal,
+  .js .project.reveal .project__media,
+  .js .project.reveal .project__card { opacity: 1 !important; transform: none !important; }
+  .details { grid-template-rows: 1fr !important; }
+  .details__inner { opacity: 1 !important; transform: none !important; }
+  .read-more, .thumbs, .video-cta, .intro__actions .button svg { display: none !important; }
+  .project, .intro { break-inside: avoid; box-shadow: none; }
+  .project__media { height: auto !important; }
 }

@@ -6,7 +6,7 @@ window.CONTENT = {
     "degree": "BEng (Hons) Electrical Engineering",
     "headline": "Electrical & Electronic Engineering student building hardware that is safe, measurable and easy to use.",
     "linkedin": "https://www.linkedin.com/in/muhammad-anas-kamran",
-    "email": "muhammad-anas.kamran@connect.polyu.hk",
+    "email": { "user": "muhammad-anas.kamran", "domain": "connect.polyu.hk" },
     "location": "Hong Kong",
     "logo": "polyu"
   },

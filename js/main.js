@@ -297,13 +297,6 @@
     if (!/^assets\/video\/[\w.-]+\.(mp4|webm)(\?v=\d+)?$/.test(src)) return;
     dialogFrame.innerHTML =
       `<video src="${esc(src)}" title="${esc(poster.dataset.title)}" controls autoplay muted playsinline preload="auto"></video>`;
-    // The demo is long and silent, so play it at 2x by default (still changeable
-    // from the player's own speed menu).
-    const video = dialogFrame.querySelector("video");
-    if (video) {
-      video.defaultPlaybackRate = 2;
-      video.playbackRate = 2;
-    }
     dialog.showModal();
     document.documentElement.classList.add("dialog-open"); // stop the page scrolling behind
   });

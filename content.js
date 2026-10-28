@@ -111,7 +111,7 @@ window.CONTENT = {
         "items": [
           {
             "type": "video",
-            "src": "assets/video/ai-cad-drawing-demo.mp4?v=2",
+            "src": "assets/video/ai-cad-drawing-demo.mp4?v=3",
             "poster": "assets/projects/ai-cad-drawing-poster.jpg",
             "videoAspect": "20 / 11",
             "label": "Watch demo · 0:53",

@@ -9,8 +9,8 @@
   --text-tertiary: #767676;
   --border: rgba(25, 25, 25, 0.08);
   --accent: #0A66C2;
-  --outcome-bg: #1F1F1F;     /* dark finale card */
-  --outcome-text: #D9D6CF;   /* soft cream body text on the dark card */
+  --outcome-bg: #1F1F1F;     /* ink accent: read-more chevron + video play CTA */
+  --spine: rgba(25, 25, 25, 0.30);  /* vertical spine behind Read more sections */
 
   /* One corner radius for every card, image and logo */
   --radius: 24px;
@@ -499,11 +499,25 @@ img { display: block; max-width: 100%; }
 .read-more[aria-expanded="true"] svg { transform: rotate(180deg); }
 
 .project__body {
+  position: relative;
+  padding-left: 26px; /* room for the spine + its section dots */
   margin-top: 32px;
   padding-top: 32px;
   border-top: 1px solid var(--border);
   display: grid;
   gap: 28px;
+}
+/* Continuous spine: one fading line runs down the left of the whole section,
+   dissolving at both ends so it reads as a line that continues beyond. */
+.project__body::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: linear-gradient(to bottom, transparent 0%, var(--spine) 14%, var(--spine) 86%, transparent 100%);
 }
 
 /* Detail sections: one shared anatomy (label -> optional title -> body) */
@@ -517,43 +531,25 @@ img { display: block; max-width: 100%; }
   text-transform: none;
   color: var(--text);
 }
-.block__label { margin: 0 0 6px; font-size: 18px; line-height: 1.4; } /* one step above the 16px decision titles */
-/* Section headings (not Outcome, not the decision titles) are marked with a
-   soft warm grey from the page's cream family. An inline background covers the glyph height, exactly like
-   the selection bands; the 5px side padding is offset by a negative margin so
-   the words stay aligned with the text below. */
-.block:not(.outcome) > .block__label .block__label-text {
-  margin-left: -5px;
-  /* extra room below so the letters sit centred in the band (inline padding
-     doesn't affect layout, so nothing around it moves) */
-  padding: 0 5px 0.12em;
-  border-radius: 2px;
-  background: var(--heading-mark);
-  color: var(--text);
-  -webkit-box-decoration-break: clone;
-          box-decoration-break: clone;
-}
-/* Decisions: grouped under one KEY INSIGHT(S) label by a thin left rule.
-   Titles are bold at body size, so they read as lead-ins, not headings. */
-.insights {
-  position: relative;
-  display: grid;
-  gap: 18px;
-  padding-left: 16px;
-}
-/* The group rule spans exactly the text it groups: it starts level with the
-   top of the first title's letters and ends at the last line's baseline,
-   rather than at the edges of the line boxes (which left it touching the
-   heading above). 0.42em = the half-leading + space above cap height. */
-.insights::before {
+.block__label { position: relative; margin: 0 0 6px; font-size: 18px; line-height: 1.4; } /* one step above the 16px decision titles */
+/* Solid ink dot where each section meets the spine. Its 6px dot centres on the
+   2px spine (26px padding − 22px offset + 3px half-width = the spine's centre). */
+.block__label::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0.42em;
-  bottom: 0.42em;
-  width: 2px;
-  border-radius: 1px;
-  background: rgba(25, 25, 25, 0.12);
+  left: -22px;
+  top: 0.58em;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--text);
+}
+/* Decisions sit flush under their KEY INSIGHT(S) label: bold body-size lead-ins,
+   no extra rule or indent, so they read as part of the one spine. */
+.insights {
+  display: grid;
+  gap: 16px;
 }
 .insight__title { margin-bottom: 4px; }
 .block__body {
@@ -563,19 +559,16 @@ img { display: block; max-width: 100%; }
   color: #333333;
 }
 
-/* Level 3: Outcome, the "dark finale" card that closes every project. Same
-   typography as the sections above, inverted: white heading, soft cream text.
-   Its outer edges line up with the text column and the divider above, so it
-   sits on the same grid as everything else in the card. */
-.outcome {
-  padding: 20px 22px 22px;
-  background: var(--outcome-bg);
-  border-radius: 24px;
+/* Spotlight: a JS-driven highlight (main.js) keeps the section under the cursor
+   full strength while its neighbours gently dim and that section's dot swells.
+   JS — not :hover — drives it so the highlight keeps up while the page scrolls
+   under a still cursor. Mouse/trackpad only; touch gets the static spine. */
+.block { transition: opacity 500ms var(--ease-premium); }
+.block__label::before { transition: transform 500ms var(--ease-premium); }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .project__body.is-spotlighting .block:not(.is-spotlit) { opacity: 0.5; }
+  .project__body.is-spotlighting .block.is-spotlit .block__label::before { transform: scale(1.6); }
 }
-.outcome .block__label { color: #FFFFFF; }
-.outcome .block__body { color: var(--outcome-text); }
-/* Selection on the dark card: a lighter band so it stays visible */
-.outcome .sel-band { background: #5A5853; }
 
 /* ---------- Video poster + viewer ---------- */
 .video-poster {
@@ -714,6 +707,8 @@ html.dialog-open { overflow: hidden; }
   .js .project.reveal .project__card,
   .details,
   .details__inner,
+  .block,
+  .block__label::before,
   .read-more svg {
     opacity: 1;
     transform: none;
@@ -785,7 +780,6 @@ html.dialog-open { overflow: hidden; }
   .project__card { --footer-space: 16px; --card-pad-x: 22px; padding: 24px var(--card-pad-x) var(--footer-space); }
   .logo--lg { max-width: 56px; max-height: 56px; }
   .logo--sm { max-width: 52px; max-height: 52px; }
-  .outcome { padding: 18px 18px 20px; border-radius: 20px; }
   .project__desc { font-size: 17px; }
   .section-head { margin: 64px 0 28px; }
 }

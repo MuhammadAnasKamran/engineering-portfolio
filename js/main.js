@@ -80,7 +80,6 @@
   document.getElementById("intro").innerHTML = `
     <div>
       <h1 class="intro__name">${esc(profile.name)}</h1>
-      <p class="intro__headline">${esc(profile.headline)}</p>
     </div>
     <div class="intro__edu">
       ${logoHTML(profile.logo, "lg")}
@@ -108,10 +107,10 @@
   //   The problem    -> paragraph
   //   My role        -> paragraph (skipped when a project has none)
   //   Key insight(s) -> one heading for all decisions; each decision is a bold
-  //                     body-size line + paragraph, grouped by a thin left rule
-  //   Outcome        -> paragraph in the dark finale card
-  const section = (label, content, extraClass = "") => `
-    <section class="block${extraClass ? ` ${extraClass}` : ""}">
+  //                     body-size line + paragraph
+  //   Outcome        -> paragraph (same treatment as every other section)
+  const section = (label, content) => `
+    <section class="block">
       <h4 class="block__label"><span class="block__label-text">${esc(label)}</span></h4>
       ${content}
     </section>`;
@@ -133,7 +132,7 @@
     p.insights.length
       ? section(p.insights.length > 1 ? "Key insights" : "Key insight", insightsGroup(p.insights))
       : "",
-    section("Outcome", paragraph(p.outcome), "outcome"),
+    section("Outcome", paragraph(p.outcome)),
   ].join("");
 
   document.getElementById("project-list").innerHTML = projects
@@ -521,6 +520,61 @@
       return at(y1, y2, (lo + hi) / 2);
     };
   }
+
+  /* ---------- Spotlight: section highlight that tracks scrolling ----------
+     CSS :hover does not refresh while the page scrolls under a still cursor,
+     so a scroll would freeze the highlight on the wrong section. Instead we
+     remember the cursor's last position and re-hit-test each frame, so the
+     spotlight stays on the section actually under the cursor as the page moves. */
+  (function () {
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!fine.matches || reduce.matches) return;
+
+    let pointerX = -1, pointerY = -1; // off-screen until the cursor first moves
+    let raf = 0;
+
+    const bodies = () =>
+      document.querySelectorAll(".project__card.is-open .project__body");
+
+    const spot = (body) => {
+      const r = body.getBoundingClientRect();
+      if (pointerX < r.left || pointerX > r.right ||
+          pointerY < r.top || pointerY > r.bottom) return { inside: false, block: null };
+      let block = null;
+      for (const b of body.querySelectorAll(".block")) {
+        const br = b.getBoundingClientRect();
+        if (pointerX >= br.left && pointerX <= br.right &&
+            pointerY >= br.top && pointerY <= br.bottom) { block = b; break; }
+      }
+      return { inside: true, block };
+    };
+
+    const update = () => {
+      raf = 0;
+      bodies().forEach((body) => {
+        const { inside, block } = spot(body);
+        body.classList.toggle("is-spotlighting", inside);
+        body.querySelectorAll(".block.is-spotlit").forEach((b) => {
+          if (b !== block) b.classList.remove("is-spotlit");
+        });
+        if (block) block.classList.add("is-spotlit");
+      });
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(update); };
+
+    document.addEventListener("pointermove", (e) => {
+      pointerX = e.clientX;
+      pointerY = e.clientY;
+      schedule();
+    });
+    document.addEventListener("pointerleave", () => {
+      pointerX = pointerY = -1; // cursor left the window: clear the spotlight
+      schedule();
+    });
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+  })();
 
   /* ---------- Shared links to a project ---------- */
   if (location.hash) {
